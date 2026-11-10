@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicketBook - Book Your Experience</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       Global Navigation Header
+       ========================================== -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-container">
+      
+      <!-- Brand Logo -->
+      <div class="brand-logo" onclick="TicketBook.showView('mall-home')">
+        <div class="brand-icon">🎟️</div>
+        <div class="brand-name">Ticket<span>Book</span></div>
+      </div>
+
+      <!-- Selected Mall Pill -->
+      <div class="nav-mall-pill" id="navMallPill" onclick="TicketBook.showView('mall-selection')" title="Change Mall">
+        <span>📍</span>
+        <span id="navMallName">Select Mall</span>
+        <span style="font-size: 0.7rem; opacity: 0.7;">▼</span>
+      </div>
+
+      <!-- Dynamic Navigation Links -->
+      <ul class="nav-links" id="navLinks">
+        <!-- Rendered by TicketBook.updateNavbar() -->
+      </ul>
+
+      <!-- User Profile / Actions -->
+      <div class="nav-actions" id="navActions">
+        <!-- Rendered by TicketBook.updateNavbar() -->
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==========================================
+       Main Application Views Container (SPA)
+       ========================================== -->
+  <main class="main-wrapper">
+    <div class="container">
+
+      <!-- ==========================================
+           VIEW 1: LOGIN PAGE
+           ========================================== -->
+      <section class="app-view" id="view-login">
+        <div class="auth-wrapper">
+          <div class="auth-header">
+            <div class="brand-logo">
+              <div class="brand-icon">🎟️</div>
+              <div class="brand-name">Ticket<span>Book</span></div>
+            </div>
+            <p class="auth-tagline">“Book Your Experience. Enjoy Every Moment.”</p>
+            <h1 style="font-size: 1.5rem; margin-top: 10px;">Welcome Back</h1>
+          </div>
+
+          <form id="loginForm" novalidate>
+            <div class="form-group">
+              <label for="loginRole">Account Role</label>
+              <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <select id="loginRole" class="form-control" required>
+                  <option value="user" selected>User (Standard Patron)</option>
+                  <option value="admin">Admin (System Manager)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="loginEmail">Email Address</label>
+              <div class="input-wrap">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="loginEmail" class="form-control" placeholder="name@ticketbook.com" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="loginPassword">
+                Password
+                <span style="font-size: 0.78rem; color: var(--text-muted); cursor: pointer;" onclick="alert('Demo passwords:\nUser: user123\nAdmin: admin123')">Need Help?</span>
+              </label>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" required>
+                <button type="button" class="pwd-toggle-btn" id="toggleLoginPwd">👁️</button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 6px;">
+              <span>Sign In to TicketBook</span>
+              <span>→</span>
+            </button>
+
+            <button type="button" class="btn btn-secondary btn-block" style="margin-top: 10px;" onclick="TicketBook.showView('signup')">
+              Create New Account
+            </button>
+          </form>
+
+          <!-- Quick Autofill for Reviewers -->
+          <div class="demo-accounts">
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+              ⚡ Quick Fill for Evaluators
+            </div>
+            <div class="demo-pills">
+              <button type="button" class="demo-btn" id="fillDemoUser">👤 User Demo</button>
+              <button type="button" class="demo-btn" id="fillDemoAdmin">⚡ Admin Demo</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 2: SIGNUP PAGE
+           ========================================== -->
+      <section class="app-view" id="view-signup">
+        <div class="auth-wrapper" style="max-width: 500px;">
+          <div class="auth-header">
+            <div class="brand-logo">
+              <div class="brand-icon">🎟️</div>
+              <div class="brand-name">Ticket<span>Book</span></div>
+            </div>
+            <p class="auth-tagline">“Book Your Experience. Enjoy Every Moment.”</p>
+            <h1 style="font-size: 1.5rem; margin-top: 10px;">Create Account</h1>
+          </div>
+
+          <form id="signupForm" novalidate>
+            <div class="form-group">
+              <label for="signupRole">Select Role</label>
+              <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <select id="signupRole" class="form-control">
+                  <option value="user" selected>User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupName">Full Name</label>
+              <div class="input-wrap">
+                <span class="input-icon">🏷️</span>
+                <input type="text" id="signupName" class="form-control" placeholder="e.g. Rahul Sharma" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupEmail">Email Address</label>
+              <div class="input-wrap">
+                <span class="input-icon">✉️</span>
+                <input type="email" id="signupEmail" class="form-control" placeholder="name@example.com" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupPhone">Phone Number</label>
+              <div class="input-wrap">
+                <span class="input-icon">📱</span>
+                <input type="tel" id="signupPhone" class="form-control" placeholder="+91 9876543210" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="signupPassword" class="form-control" placeholder="Min. 6 characters" minlength="6" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="signupConfirmPassword">Confirm Password</label>
+              <div class="input-wrap">
+                <span class="input-icon">🔑</span>
+                <input type="password" id="signupConfirmPassword" class="form-control" placeholder="Re-enter password" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 6px;">
+              <span>Register Account</span>
+              <span>→</span>
+            </button>
+
+            <button type="button" class="btn btn-secondary btn-block" style="margin-top: 10px;" onclick="TicketBook.showView('login')">
+              Already have an account? Sign In
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 3: MALL SELECTION
+           ========================================== -->
+      <section class="app-view" id="view-mall-selection">
+        <div class="mall-select-hero">
+          <span class="badge badge-events" style="margin-bottom: 8px;">Entertainment Hubs</span>
+          <h1>Choose Your Mall</h1>
+          <p style="color: var(--text-muted);">Select your preferred entertainment mall destination</p>
+          <div class="mall-search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="mallSearchInput" placeholder="Search mall by name or location...">
+          </div>
+        </div>
+
+        <div class="mall-grid" id="mallSelectGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 4: MALL HOME
+           ========================================== -->
+      <section class="app-view" id="view-mall-home">
+        <!-- Mall Hero Section -->
+        <div class="mall-hero">
+          <img src="" alt="Mall Banner" class="mall-hero-bg" id="mallHeroBg">
+          <div class="mall-hero-gradient"></div>
+          <div class="mall-hero-content">
+            <div class="mall-pill-tag" id="mallHeroPill">📍 Featured Destination</div>
+            <h1 class="mall-hero-title">Discover. Book. Experience.</h1>
+            <p class="mall-hero-tagline" id="mallHeroName">PVR INOX Mall</p>
+            <p class="mall-hero-desc">
+              Experience the latest movies in IMAX 3D, live musical symphonies, and side-splitting comedy specials.
+            </p>
+            <div class="mall-hero-actions">
+              <button class="btn btn-primary btn-lg" onclick="TicketBook.showView('events')">Explore All Events →</button>
+              <button class="btn btn-secondary btn-lg" onclick="TicketBook.showView('mall-selection')">Change Mall 📍</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Nav Bar -->
+        <div class="category-nav-bar">
+          <button class="cat-pill active" onclick="TicketBook.showView('events', { category: 'All' })">🌟 All Shows</button>
+          <button class="cat-pill" onclick="TicketBook.showView('events', { category: 'Movies' })">🎬 Movies</button>
+          <button class="cat-pill" onclick="TicketBook.showView('events', { category: 'Music' })">🎵 Music</button>
+          <button class="cat-pill" onclick="TicketBook.showView('events', { category: 'Comedy' })">🎤 Comedy</button>
+          <button class="cat-pill" onclick="TicketBook.showView('events', { category: 'Sports' })">⚽ Sports</button>
+        </div>
+
+        <!-- Featured Events -->
+        <div class="events-section">
+          <div class="section-header">
+            <div>
+              <h2>🔥 Featured Events</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Trending blockbusters & headline performances</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="TicketBook.showView('events')">View All →</button>
+          </div>
+          <div class="events-grid" id="gridFeatured"></div>
+        </div>
+
+        <!-- Movies Section -->
+        <div class="events-section">
+          <div class="section-header">
+            <div>
+              <h2>🎬 Cinema & Movies</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Latest theatrical releases</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="TicketBook.showView('events', { category: 'Movies' })">View Movies →</button>
+          </div>
+          <div class="events-grid" id="gridMovies"></div>
+        </div>
+
+        <!-- Music Section -->
+        <div class="events-section">
+          <div class="section-header">
+            <div>
+              <h2>🎵 Music & Concerts</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Live symphonies and concerts</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="TicketBook.showView('events', { category: 'Music' })">View Music →</button>
+          </div>
+          <div class="events-grid" id="gridMusic"></div>
+        </div>
+
+        <!-- Comedy Section -->
+        <div class="events-section">
+          <div class="section-header">
+            <div>
+              <h2>🎤 Stand-up Comedy</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Laugh out loud with top stand-ups</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="TicketBook.showView('events', { category: 'Comedy' })">View Comedy →</button>
+          </div>
+          <div class="events-grid" id="gridComedy"></div>
+        </div>
+
+        <!-- Sports Section -->
+        <div class="events-section">
+          <div class="section-header">
+            <div>
+              <h2>⚽ Sports Screenings</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Stadium energy on 4K giant screens</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="TicketBook.showView('events', { category: 'Sports' })">View Sports →</button>
+          </div>
+          <div class="events-grid" id="gridSports"></div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 5: BROWSE EVENTS
+           ========================================== -->
+      <section class="app-view" id="view-events">
+        <div style="margin-bottom: 24px;">
+          <h1>Browse All Events & Shows</h1>
+          <p style="color: var(--text-muted);">Filter shows by category, mall, price, or date</p>
+        </div>
+
+        <!-- Category Chips -->
+        <div class="category-nav-bar" id="browseCategoryChips">
+          <button class="chip-btn active" data-cat="All">All Categories</button>
+          <button class="chip-btn" data-cat="Movies">🎬 Movies</button>
+          <button class="chip-btn" data-cat="Music">🎵 Music</button>
+          <button class="chip-btn" data-cat="Comedy">🎤 Comedy</button>
+          <button class="chip-btn" data-cat="Sports">⚽ Sports</button>
+          <button class="chip-btn" data-cat="Theatre">🎭 Theatre</button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="form-group" style="margin: 0;">
+            <label>Search Keyword</label>
+            <input type="text" id="browseSearch" class="filter-input" placeholder="Search by name, artist...">
+          </div>
+
+          <div class="form-group" style="margin: 0;">
+            <label>Mall</label>
+            <select id="browseMall" class="filter-input">
+              <option value="All">All Malls</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin: 0;">
+            <label>Price Range</label>
+            <select id="browsePrice" class="filter-input">
+              <option value="All">Any Price</option>
+              <option value="under300">Under ₹300</option>
+              <option value="300to600">₹300 - ₹600</option>
+              <option value="above600">Above ₹600</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin: 0;">
+            <label>Date</label>
+            <input type="date" id="browseDate" class="filter-input">
+          </div>
+
+          <button type="button" class="btn btn-secondary" id="browseReset" style="height: 42px;">Reset</button>
+        </div>
+
+        <div style="margin-bottom: 20px; color: var(--text-muted); font-size: 0.9rem;">
+          Showing <strong id="browseCount" style="color: var(--text-main);">0</strong> shows
+        </div>
+
+        <div class="events-grid" id="browseEventsGrid">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 6: EVENT DETAILS
+           ========================================== -->
+      <section class="app-view" id="view-event-details">
+        <div style="margin-bottom: 18px;">
+          <button class="btn btn-secondary btn-sm" onclick="TicketBook.showView('events')">← Back to Events</button>
+        </div>
+
+        <div class="event-details-card">
+          <div class="event-poster-pane">
+            <img src="" alt="Poster" id="dtlPoster" style="width: 100%; height: 100%; object-fit: cover;">
+            <div style="position: absolute; top: 16px; left: 16px;">
+              <span class="badge badge-movie" id="dtlCategory">Movies</span>
+            </div>
+          </div>
+
+          <div class="event-info-pane">
+            <h1 id="dtlTitle" style="font-size: 2rem; margin-bottom: 8px;">Event Title</h1>
+            
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+              <span class="seat-tag" id="dtlMall">PVR INOX Mall</span>
+              <span class="seat-tag" id="dtlVenue">Audi 1</span>
+              <span class="seat-tag" id="dtlLanguage">English / Hindi</span>
+              <span class="seat-tag" id="dtlDuration">180 mins</span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <h4 style="margin-bottom: 6px;">About The Show</h4>
+              <p id="dtlDesc" style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;"></p>
+            </div>
+
+            <div class="event-specs-grid">
+              <div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-sub);">Schedule</div>
+                <div id="dtlDateTime" style="font-weight: 700;">15 Oct 2026 • 07:00 PM</div>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-sub);">Availability</div>
+                <div id="dtlSeatsLeft" style="font-weight: 700; color: #34d399;">36 Seats Left</div>
+              </div>
+            </div>
+
+            <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-light); padding-top: 20px;">
+              <div>
+                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Ticket Price</span>
+                <div id="dtlPrice" style="font-size: 1.8rem; font-weight: 800; color: #34d399; font-family: var(--font-heading);">₹250</div>
+              </div>
+
+              <button class="btn btn-primary btn-lg" id="dtlBookBtn">
+                <span>Book Seats</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 7: SEAT SELECTION
+           ========================================== -->
+      <section class="app-view" id="view-seats">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <h1 id="seatEvTitle">Select Seats</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;" id="seatEvMeta">Venue details</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="TicketBook.showView('events')">Change Show</button>
+        </div>
+
+        <div class="cinema-hall-container">
+          <div class="screen-wrapper">
+            <div class="screen-curve"></div>
+            <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-sub);">Screen / Stage This Way</div>
+          </div>
+
+          <div class="seats-legend">
+            <div><span class="legend-sample legend-available"></span> Available</div>
+            <div><span class="legend-sample legend-selected"></span> Selected</div>
+            <div><span class="legend-sample legend-booked"></span> Booked</div>
+          </div>
+
+          <!-- Seats Matrix -->
+          <div class="seats-matrix" id="seatMatrix"></div>
+        </div>
+
+        <!-- Checkout Bottom Bar -->
+        <div class="seats-checkout-bar">
+          <div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Selected Seats</div>
+            <div id="seatSelectedTags" style="display: flex; gap: 6px; margin-top: 4px;">None selected</div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 24px;">
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Ticket Price</div>
+              <div id="seatPricePerTicket" style="font-size: 1.1rem; font-weight: 700;">₹250</div>
+            </div>
+
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Total</div>
+              <div id="seatTotal" style="font-size: 1.6rem; font-weight: 800; color: #34d399; font-family: var(--font-heading);">₹0</div>
+            </div>
+
+            <button class="btn btn-primary btn-lg" id="seatProceedBtn" disabled>
+              <span>Proceed to Payment →</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 8: PAYMENT
+           ========================================== -->
+      <section class="app-view" id="view-payment">
+        <div class="payment-grid">
+          <div class="payment-main-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+              <div>
+                <h2>Secure Checkout</h2>
+                <p style="color: var(--text-muted); font-size: 0.88rem;">Select payment method</p>
+              </div>
+              <span class="badge status-confirmed">🔒 256-Bit SSL Demo</span>
+            </div>
+
+            <div class="method-tabs">
+              <button type="button" class="method-tab active" data-method="upi">⚡ Instant UPI</button>
+              <button type="button" class="method-tab" data-method="card">💳 Card</button>
+              <button type="button" class="method-tab" data-method="wallet">👛 Wallet</button>
+            </div>
+
+            <form id="paymentForm">
+              <!-- UPI Panel -->
+              <div id="payPanelUpi">
+                <div class="quick-options">
+                  <span class="quick-option-pill active">Google Pay</span>
+                  <span class="quick-option-pill">PhonePe</span>
+                  <span class="quick-option-pill">Paytm</span>
+                </div>
+                <div class="form-group">
+                  <label>UPI ID (VPA)</label>
+                  <input type="text" class="form-control no-icon" value="user@okhdfcbank" required>
+                </div>
+              </div>
+
+              <!-- Card Panel -->
+              <div id="payPanelCard" style="display: none;">
+                <div class="form-group">
+                  <label>Card Number</label>
+                  <input type="text" class="form-control no-icon" value="4532 8901 2345 6789">
+                </div>
+                <div class="card-row">
+                  <div class="form-group">
+                    <label>MM/YY</label>
+                    <input type="text" class="form-control no-icon" value="12/28">
+                  </div>
+                  <div class="form-group">
+                    <label>CVV</label>
+                    <input type="password" class="form-control no-icon" value="321">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Wallet Panel -->
+              <div id="payPanelWallet" style="display: none;">
+                <div class="form-group">
+                  <label>Select Wallet</label>
+                  <select class="form-control">
+                    <option>Paytm Wallet</option>
+                    <option>PhonePe Wallet</option>
+                    <option>Amazon Pay</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 14px;">
+                <span>Pay Now</span>
+                <span id="payBtnTotal">₹0</span>
+              </button>
+              <p style="font-size: 0.75rem; color: var(--text-sub); text-align: center; margin-top: 10px;">
+                ⚠️ Demo college project simulation. No real money charged.
+              </p>
+            </form>
+          </div>
+
+          <!-- Order Summary Sidebar -->
+          <aside class="order-summary-card">
+            <h3 style="margin-bottom: 16px;">Booking Summary</h3>
+            <div style="margin-bottom: 14px;">
+              <h4 id="paySumTitle">Event Name</h4>
+              <div id="paySumMeta" style="font-size: 0.85rem; color: var(--text-muted);">Mall & Time</div>
+              <div id="paySumSeats" class="seat-tag" style="margin-top: 8px; display: inline-block;">Seats: A1, A2</div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-light); padding: 14px 0;">
+              <div class="price-row">
+                <span id="paySumTickets">Tickets: ₹0</span>
+              </div>
+              <div class="price-row">
+                <span>Convenience Fee:</span>
+                <span id="paySumFee">₹40</span>
+              </div>
+              <div class="price-row total-row">
+                <span>Total Payable:</span>
+                <span id="paySumTotal" style="color: #34d399;">₹0</span>
+              </div>
+            </div>
+
+            <div style="font-size: 0.78rem; color: var(--text-muted);">
+              ✓ 100% Refund upon cancellation<br>
+              ✓ Instant digital m-ticket
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 9: DIGITAL TICKET (NO QR CODE)
+           ========================================== -->
+      <section class="app-view" id="view-ticket">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div class="badge status-confirmed" style="padding: 6px 16px; font-size: 0.88rem; margin-bottom: 8px;">
+            ✓ Booking Confirmed
+          </div>
+          <h1>Your Digital Experience Ticket</h1>
+        </div>
+
+        <div class="ticket-card" id="printTicketCard">
+          <div class="ticket-top-band">
+            <div class="brand-logo" style="font-size: 1.2rem;">
+              <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.8rem;">🎟️</div>
+              <div class="brand-name">Ticket<span>Book</span></div>
+            </div>
+            <code id="tktId" style="background: rgba(0,0,0,0.3); padding: 3px 8px; border-radius: 4px;">TB-000000</code>
+          </div>
+
+          <div class="ticket-body">
+            <h2 id="tktEvent" style="font-size: 1.7rem; margin-bottom: 4px;">Avengers: Secret Wars</h2>
+            <div id="tktVenue" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">PVR INOX Mall</div>
+
+            <div class="ticket-grid-details">
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-sub);">Date</span>
+                <div id="tktDate" style="font-weight: 700;">15 Oct 2026</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-sub);">Time</span>
+                <div id="tktTime" style="font-weight: 700;">07:00 PM</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-sub);">Seats</span>
+                <div id="tktSeats" style="font-weight: 700; color: #34d399;">A1, A2</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-sub);">Tickets</span>
+                <div id="tktCount" style="font-weight: 700;">2 Tickets</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-sub);">Patron Name</span>
+                <div id="tktName" style="font-weight: 700;">Rahul Sharma</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-sub);">Amount Paid</span>
+                <div id="tktAmount" style="font-weight: 700; color: #34d399;">₹540</div>
+              </div>
+            </div>
+
+            <div class="ticket-perforation"></div>
+
+            <div style="text-align: center;">
+              <div class="barcode-visual"></div>
+              <div id="tktBarcode" style="font-family: monospace; font-size: 0.8rem; letter-spacing: 2px; color: var(--text-sub);">*TB-789012*</div>
+              <div id="tktStatus" style="color: #34d399; font-weight: 700; font-size: 0.85rem; margin-top: 4px;">Confirmed ✓</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+          <button class="btn btn-primary" onclick="window.print()">📥 Download / Print Ticket</button>
+          <button class="btn btn-secondary" onclick="TicketBook.showView('bookings')">View My Bookings</button>
+          <button class="btn btn-secondary" onclick="TicketBook.showView('mall-home')">Back to Home</button>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 10: MY BOOKINGS
+           ========================================== -->
+      <section class="app-view" id="view-bookings">
+        <div style="margin-bottom: 24px;">
+          <h1>My Bookings</h1>
+          <p style="color: var(--text-muted);">Manage your active reservations and cancellation refunds</p>
+        </div>
+
+        <div id="myBookingsList">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 11: ADMIN DASHBOARD
+           ========================================== -->
+      <section class="app-view" id="view-admin">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div>
+            <h1>Admin Control Panel</h1>
+            <p style="color: var(--text-muted);">Live metrics and event management</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="TicketBook.showView('mall-home')">Preview Patron Site</button>
+        </div>
+
+        <!-- KPI Metrics -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon-wrap stat-icon-users">👥</div>
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-sub); font-weight: 700;">Total Users</div>
+              <div id="adStatUsers" style="font-size: 1.7rem; font-weight: 800;">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap stat-icon-events">🎬</div>
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-sub); font-weight: 700;">Total Events</div>
+              <div id="adStatEvents" style="font-size: 1.7rem; font-weight: 800;">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap stat-icon-bookings">🎟️</div>
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-sub); font-weight: 700;">Total Bookings</div>
+              <div id="adStatBookings" style="font-size: 1.7rem; font-weight: 800;">0</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap stat-icon-revenue">💰</div>
+            <div>
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-sub); font-weight: 700;">Total Revenue</div>
+              <div id="adStatRev" style="font-size: 1.7rem; font-weight: 800; color: #34d399;">₹0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add / Edit Event Form -->
+        <div class="admin-card" id="admin-form">
+          <h3 id="adFormTitle" style="margin-bottom: 16px;">Add New Event</h3>
+          <form id="adEventForm">
+            <input type="hidden" id="adEditId" value="">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+              <div class="form-group">
+                <label>Event Name *</label>
+                <input type="text" id="adFormName" class="form-control no-icon" placeholder="Show title" required>
+              </div>
+              <div class="form-group">
+                <label>Category *</label>
+                <select id="adFormCat" class="form-control">
+                  <option value="Movies">Movies</option>
+                  <option value="Music">Music</option>
+                  <option value="Comedy">Comedy</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Theatre">Theatre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Host Mall *</label>
+                <select id="adFormMall" class="form-control"></select>
+              </div>
+              <div class="form-group">
+                <label>Venue / Screen *</label>
+                <input type="text" id="adFormVenue" class="form-control no-icon" placeholder="Audi 1" required>
+              </div>
+              <div class="form-group">
+                <label>Ticket Price (₹) *</label>
+                <input type="number" id="adFormPrice" class="form-control no-icon" placeholder="250" required>
+              </div>
+              <div class="form-group">
+                <label>Date *</label>
+                <input type="date" id="adFormDate" class="form-control no-icon" required>
+              </div>
+              <div class="form-group">
+                <label>Time *</label>
+                <input type="text" id="adFormTime" class="form-control no-icon" placeholder="07:00 PM" required>
+              </div>
+              <div class="form-group">
+                <label>Duration *</label>
+                <input type="text" id="adFormDuration" class="form-control no-icon" placeholder="150 mins" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Description *</label>
+              <textarea id="adFormDesc" class="form-control no-icon" rows="2" placeholder="Show description" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save & Publish Event ✓</button>
+          </form>
+        </div>
+
+        <!-- Events List Table -->
+        <div class="admin-card">
+          <h3 style="margin-bottom: 14px;">Scheduled Shows & Events</h3>
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Event Name</th>
+                  <th>Category</th>
+                  <th>Mall</th>
+                  <th>Schedule</th>
+                  <th>Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adEventsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- All Bookings Table -->
+        <div class="admin-card">
+          <h3 style="margin-bottom: 14px;">All Customer Bookings</h3>
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Patron</th>
+                  <th>Event</th>
+                  <th>Seats</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adBookingsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Registered Users Table -->
+        <div class="admin-card">
+          <h3 style="margin-bottom: 14px;">Registered Users</h3>
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody id="adUsersTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==========================================
+       Modals
+       ========================================== -->
+  <!-- Payment Processing Modal -->
+  <div class="modal-overlay" id="payModal">
+    <div class="modal-content" style="text-align: center;">
+      <div id="payStageProc">
+        <div style="width: 56px; height: 56px; border: 4px solid rgba(255,42,95,0.2); border-top-color: var(--primary); border-radius: 50%; margin: 0 auto 16px; animation: spin 0.8s linear infinite;"></div>
+        <h3>Authorizing Payment</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Connecting to bank authorization gateway...</p>
+      </div>
+      <div id="payStageSucc" style="display: none;">
+        <div style="font-size: 2.5rem; color: #10b981; margin-bottom: 8px;">✓</div>
+        <h3 style="color: #34d399;">Payment Successful!</h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Generating your digital ticket pass...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancellation Modal -->
+  <div class="modal-overlay" id="cancelModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="document.getElementById('cancelModal').classList.remove('active')">&times;</button>
+      <div style="font-size: 2rem; color: #f87171; margin-bottom: 8px;">⚠️</div>
+      <h3 style="margin-bottom: 8px;">Cancel Booking?</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Are you sure you want to cancel booking <strong id="cancelModalId" style="color: #fff;">#TB-000000</strong>?
+      </p>
+      <div style="background: rgba(10,13,20,0.6); padding: 12px; border-radius: 8px; margin: 16px 0; font-size: 0.85rem;">
+        • Seats <strong id="cancelModalSeats" style="color: #34d399;"></strong> will be released.<br>
+        • Simulated refund of <strong id="cancelModalAmt" style="color: #34d399;"></strong> will be credited instantly.
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="btn btn-secondary btn-block" onclick="document.getElementById('cancelModal').classList.remove('active')">Keep Booking</button>
+        <button type="button" class="btn btn-danger btn-block" id="cancelModalConfirmBtn">Yes, Cancel & Refund</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div class="brand-logo" onclick="TicketBook.showView('mall-home')">
+          <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.8rem;">🎟️</div>
+          <div class="brand-name" style="font-size: 1.2rem;">Ticket<span>Book</span></div>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">“Book Your Experience. Enjoy Every Moment.”</p>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 TicketBook. Built with pure HTML5, CSS3 & Vanilla JavaScript for SDC Project Review.</p>
+        <p>Zero external frameworks • Instant browser ready</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/script.js"></script>
+</body>
+</html>
